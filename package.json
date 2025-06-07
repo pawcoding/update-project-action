@@ -1,0 +1,40 @@
+{
+  "name": "update-project-action",
+  "version": "0.0.1",
+  "description": "Updates the last updated timestamp inside PocketBase",
+  "keywords": [
+    "PocketBase",
+    "pawcode",
+    "GitHub",
+    "Actions"
+  ],
+  "homepage": "https://github.com/pawcoding/update-project-action#readme",
+  "bugs": {
+    "url": "https://github.com/pawcoding/update-project-action/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pawcoding/update-project-action.git"
+  },
+  "license": "MIT",
+  "author": "pawcode Development",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build src/index.js --license licenses.txt",
+    "prepare": "husky"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "packageManager": "npm@11.3.0+sha512.96eb611483f49c55f7fa74df61b588de9e213f80a256728e6798ddc67176c7b07e4a1cfc7de8922422cbce02543714367037536955221fa451b0c4fefaf20c66",
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.1",
+    "@actions/http-client": "^2.2.3",
+    "@vercel/ncc": "^0.38.3"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}

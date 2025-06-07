@@ -1,0 +1,15 @@
+name: "Update project"
+description: "Update the last updated timestamp inside PocketBase"
+inputs:
+  collection-id:
+    description: "The ID of the collection where the project is stored"
+    required: true
+  record-id:
+    description: "The ID of the record to update"
+    required: true
+  pocketbase-url:
+    description: "The URL of the PocketBase instance"
+    required: true
+runs:
+  using: "node22"
+  main: "dist/index.js"
