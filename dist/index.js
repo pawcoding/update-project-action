@@ -31844,20 +31844,6 @@ async function run() {
 
     core.info("Validating inputs...");
 
-    const pocketbaseEmail = process.env.PB_EMAIL;
-    if (!pocketbaseEmail) {
-      throw new Error(
-        'Pocketbase email is not set in environment variable "PB_EMAIL".'
-      );
-    }
-
-    const pocketbasePassword = process.env.PB_PASSWORD;
-    if (!pocketbasePassword) {
-      throw new Error(
-        'Pocketbase password is not set in environment variable "PB_PASSWORD".'
-      );
-    }
-
     const pocketbaseUrl = core.getInput("pocketbase-url");
     if (!pocketbaseUrl) {
       throw new Error('"pocketbase-url" is required.');
@@ -31873,29 +31859,14 @@ async function run() {
       throw new Error('"record-id" is required.');
     }
 
-    core.info("Inputs validated successfully. Logging in to Pocketbase...");
+    core.info("Inputs validated successfully.");
 
-    const http = new httpClient.HttpClient("pocketbase-action");
-    const loginUrl = new URL(
-      "api/collections/_superusers/auth-with-password",
-      pocketbaseUrl
-    ).href;
-    const loginRequest = await http.postJson(loginUrl, {
-      identity: pocketbaseEmail,
-      password: pocketbasePassword
-    });
-    if (loginRequest.statusCode !== 200) {
-      throw new Error(
-        `Login failed with status code ${loginRequest.statusCode}.`
-      );
-    }
-
-    const { token } = loginRequest.result;
+    const token = await getToken(pocketbaseUrl);
     const headers = {
       authorization: token
     };
 
-    core.info("Login successful. Updating record...");
+    core.info("Updating record...");
 
     const updateUrl = new URL(
       `api/collections/${collectionId}/records/${recordId}`,
@@ -31918,6 +31889,48 @@ async function run() {
   } catch (error) {
     core.setFailed(`Action failed with error: ${error.message}`);
   }
+}
+
+async function getToken(pocketbaseUrl) {
+  if (process.env.PB_TOKEN) {
+    return process.env.PB_TOKEN;
+  }
+
+  const pocketbaseEmail = process.env.PB_EMAIL;
+  if (!pocketbaseEmail) {
+    throw new Error(
+      'Pocketbase email is not set in environment variable "PB_EMAIL".'
+    );
+  }
+
+  const pocketbasePassword = process.env.PB_PASSWORD;
+  if (!pocketbasePassword) {
+    throw new Error(
+      'Pocketbase password is not set in environment variable "PB_PASSWORD".'
+    );
+  }
+
+  core.info("Logging in to Pocketbase...");
+
+  const http = new httpClient.HttpClient("pocketbase-action");
+  const loginUrl = new URL(
+    "api/collections/_superusers/auth-with-password",
+    pocketbaseUrl
+  ).href;
+  const loginRequest = await http.postJson(loginUrl, {
+    identity: pocketbaseEmail,
+    password: pocketbasePassword
+  });
+  if (loginRequest.statusCode !== 200) {
+    throw new Error(
+      `Login failed with status code ${loginRequest.statusCode}.`
+    );
+  }
+
+  const { token } = loginRequest.result;
+  core.info("Login successful.");
+
+  return token;
 }
 
 // Execute the async function
