@@ -1,6 +1,6 @@
 {
   "name": "update-project-action",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Updates the last updated timestamp inside PocketBase",
   "keywords": [
     "PocketBase",
